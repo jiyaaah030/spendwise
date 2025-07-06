@@ -31,6 +31,9 @@ export default function Home() {
     category: '',
   });
 
+  const [budgets, setBudgets] = useState<{ [category: string]: number }>({});
+  const [budgetForm, setBudgetForm] = useState<{ category: string; amount: string }>({ category: '', amount: '' });
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!form.amount || !form.date || !form.description || !form.category) {
@@ -103,7 +106,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* FORM */}
+        {/* TRANSACTION FORM */}
         <form
           onSubmit={handleSubmit}
           className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl p-6 transition hover:scale-[1.02]"
@@ -151,31 +154,70 @@ export default function Home() {
           </div>
         </form>
 
-        {/* TRANSACTIONS */}
-        <div className="bg-white/80 backdrop-blur-md shadow-lg rounded-2xl p-6 transition hover:scale-[1.02]">
-          <h2 className="text-2xl font-bold mb-4 text-purple-700">Transactions</h2>
-          <ul className="space-y-3">
-            {transactions.map((t, i) => (
-              <li
-                key={i}
-                className="flex justify-between items-center bg-purple-50 px-4 py-3 rounded-lg shadow hover:scale-[1.01] transition"
-              >
-                <span className="text-gray-900">
-                  {t.date}: ₹{t.amount} ({t.category})
-                  <span className="italic text-gray-700"> - {t.description}</span>
-                </span>
-                <button
-                  onClick={() => handleDelete(i)}
-                  className="text-red-500 hover:underline"
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
-            {transactions.length === 0 && (
-              <li className="text-gray-600">No transactions yet.</li>
-            )}
-          </ul>
+        {/* BUDGET FORM */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!budgetForm.category || !budgetForm.amount) {
+              alert("Please select category and enter budget amount.");
+              return;
+            }
+            setBudgets({ ...budgets, [budgetForm.category]: parseFloat(budgetForm.amount) });
+            setBudgetForm({ category: '', amount: '' });
+          }}
+          className="mt-8 bg-white/80 backdrop-blur-md shadow-lg rounded-2xl p-6 transition hover:scale-[1.02]"
+        >
+          <h2 className="text-xl font-bold mb-4 text-purple-700">Set Category Budgets</h2>
+          <div className="flex flex-col gap-3">
+            <select
+              value={budgetForm.category}
+              onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
+              className="p-3 border border-purple-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition bg-white"
+            >
+              <option value="">Select Category</option>
+              <option value="Food">🍔 Food</option>
+              <option value="Travel">🚗 Travel</option>
+              <option value="Shopping">🛍️ Shopping</option>
+              <option value="Bills">💡 Bills</option>
+              <option value="Other">📝 Other</option>
+            </select>
+            <input
+              type="number"
+              placeholder="Budget Amount"
+              value={budgetForm.amount}
+              onChange={(e) => setBudgetForm({ ...budgetForm, amount: e.target.value })}
+              className="p-3 border border-purple-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition"
+            />
+            <button
+              type="submit"
+              className="mt-2 bg-purple-400 hover:bg-purple-500 text-white font-semibold py-3 rounded-lg shadow transition-transform hover:scale-105"
+            >
+              Save Budget
+            </button>
+          </div>
+        </form>
+
+        {/* BUDGET SUMMARY */}
+        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {Object.entries(budgets).length === 0 && (
+            <p className="text-gray-600">No budgets set yet.</p>
+          )}
+          {Object.entries(budgets).map(([category, amount]) => (
+            <div
+              key={category}
+              className="bg-purple-50 p-4 rounded-lg shadow hover:scale-[1.01] transition"
+            >
+              <h3 className="text-lg font-semibold text-purple-800">{category}</h3>
+              <p className="text-gray-900 mt-1">Budget: ₹{amount}</p>
+              <p className="text-sm text-gray-700">
+                Spent: ₹{categorySums[category] || 0} 
+                {categorySums[category] > amount ? 
+                  <span className="text-red-600"> ⚠️ Over Budget</span> :
+                  <span className="text-green-600"> ✅ Under Budget</span>
+                }
+              </p>
+            </div>
+          ))}
         </div>
 
         {/* CHARTS */}

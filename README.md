@@ -28,10 +28,28 @@ A simple personal finance visualizer web app for tracking expenses.
 
 ---
 
+## ✨ Stage 3 Features
+✅ All Stage 2 features
+➕ Budgets:
+
+Set monthly budget for each category
+
+See budget vs actual comparison (bar chart or progress bars)
+
+Simple spending insights (like “under budget” / “over budget” notices)
+
+---
+
 ## 🛠 Tech Stack
 - **Next.js + React** for the frontend
 - **Tailwind CSS** for styling
 - **Recharts** for charts
+
+---
+
+## Live Demo (link)
+
+URL- https://spendwise-ashen.vercel.app/
 
 
 ---
