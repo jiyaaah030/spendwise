@@ -154,6 +154,27 @@ export default function Home() {
           </div>
         </form>
 
+        {/* TRANSACTION LIST */}
+<ul className="mt-6 space-y-2">
+  {transactions.map((t, index) => (
+    <li     
+      key={index}
+      className="flex justify-between items-center bg-white/70 backdrop-blur-md p-3 rounded-lg shadow hover:scale-[1.01] transition"
+    >
+      <span className="text-gray-700">
+        {t.date} - {t.description} - ₹{t.amount} ({t.category})
+      </span>
+      <button
+        onClick={() => handleDelete(index)}
+        className="ml-2 px-3 py-1 bg-red-300 hover:bg-red-400 text-white rounded transition"
+      >
+        Delete
+      </button>
+    </li>
+  ))}
+</ul>
+
+
         {/* BUDGET FORM */}
         <form
           onSubmit={(e) => {
